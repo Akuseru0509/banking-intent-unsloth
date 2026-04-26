@@ -1,11 +1,5 @@
 from pathlib import Path
 import json
-from collections import defaultdict
-
-BASE_DIR = Path(__file__).parents[0].parents[0].resolve()
-DATA_DIR = BASE_DIR / "sample_data"
-CATEGORY_PATH = DATA_DIR / "categories.json"
-MAP_PATH = DATA_DIR / "map.json"
 
 class LabelConverter():
     def __init__(self, category_path, map_path):
@@ -30,8 +24,12 @@ class LabelConverter():
 
             outf.write(data)
 
+    def _get_map(self):
+        try:
+            with open(self.map_path, "r", encoding="utf-8") as inf:
+                category_map = json.load(inf)
 
-if __name__ == "__main__":
-    converter = LabelConverter(CATEGORY_PATH, MAP_PATH)
-    category_map = converter._get_category_map()
-    converter._write_category_map(category_map)
+            return dict(category_map)
+        
+        except FileNotFoundError:
+            raise ValueError(f"No file found at {self.map_path}")
