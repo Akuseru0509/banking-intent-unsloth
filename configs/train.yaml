@@ -1,0 +1,25 @@
+model_name: "unsloth/llama-3.2-3b-unsloth-bnb-4bit"
+dtype: None
+max_seq_length: 512
+load_in_4bit: True
+learning_rate: 1e-4
+optimizer: "adamw_8bit"
+batch_size: 2
+gradient_accumulation: 8,
+epochs: 1
+decay: 0.01
+seed: 3407
+scheduler: "linear"
+warmup_steps: 10
+logging_steps: 10
+eval_steps: 100
+save_steps: 100
+output_dir: "../model"
+
+lora_r: 16
+lora_alpha: 32
+target_modules: ["q_proj", "k_proj", "v_proj", "o_proj", "up_proj", "down_proj", "gate_proj"]
+lora_dropout: 0.05
+bias: "none"
+use_rslora: False
+loftq_config: None
