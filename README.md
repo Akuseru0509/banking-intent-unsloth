@@ -211,7 +211,7 @@ max_new_tokens: 2
 bash inference.sh
 ```
 
-This executes `cd scripts && python inference.py`.
+This executes `cd scripts && python inference.py --message "Am I able to get a card in EU?"`.
 
 The default message in `inference.py` is:
 
