@@ -1,6 +1,7 @@
 from pathlib import Path
 import yaml
 from unsloth import FastLanguageModel
+import argparse
 
 from label_map import LabelConverter
 
@@ -77,10 +78,29 @@ class IntentClassification:
             return "unknown"
 
         return self.reverse_map.get(pred_label, "unknown")
-    
-if __name__ == "__main__":
-    classifier = IntentClassification(MODEL_PATH, CONFIG_DIR / "inference.yaml")
-    message = "Am I able to get a card in EU?"
-    predicted_label = classifier.__call__(message)
 
-    print(predicted_label)
+def main():
+    parser = argparse.ArgumentParser(
+        description="Intent Classification Inference"
+    )
+
+    parser.add_argument(
+        "--message",
+        type=str,
+        required=True,
+        help="Input message to classify"
+    )
+
+    args = parser.parse_args()
+
+    classifier = IntentClassification(
+        MODEL_PATH,
+        CONFIG_DIR / "inference.yaml"
+    )
+
+    predicted_label = classifier(args.message)
+
+    print("Predicted label:", predicted_label)
+
+if __name__ == "__main__":
+    main()
