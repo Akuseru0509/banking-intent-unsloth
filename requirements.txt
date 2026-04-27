@@ -28,6 +28,7 @@ huggingface_hub==1.11.0
 idna==3.11
 importlib_metadata==9.0.0
 Jinja2==3.1.6
+joblib==1.5.3
 markdown-it-py==4.0.0
 MarkupSafe==3.0.3
 mdurl==0.1.2
@@ -57,11 +58,14 @@ regex==2026.4.4
 requests==2.33.1
 rich==15.0.0
 safetensors==0.7.0
+scikit-learn==1.8.0
+scipy==1.17.1
 sentencepiece==0.2.1
 setuptools==82.0.1
 shellingham==1.5.4
 six==1.17.0
 sympy==1.14.0
+threadpoolctl==3.6.0
 tokenizers==0.22.2
 torch==2.10.0
 torchao==0.17.0
