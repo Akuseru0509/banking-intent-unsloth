@@ -205,7 +205,11 @@ load_in_4bit: True
 max_new_tokens: 2
 ```
 
-### 8.2 Run inference
+### 8.2 Finetuned model configurations
+
+Model configurations can be found in the evaluate/inference Kaggle notebook. Link shown below.
+
+### 8.3 Run inference
 
 ```bash
 bash inference.sh
@@ -242,7 +246,7 @@ print(intent)  # → "country_support"
 
 ---
 
-## 9. Demo
+## 9. Demonstration Video
 
 > **Please note that my laptop doesn't have a GPU so my demo will be on Kaggle**
 > **Link to Kaggle inference and evaluation notebook: https://www.kaggle.com/code/akuseru59/banking-intent-evalutation-inference**
