@@ -15,6 +15,7 @@ logging_steps: 10
 eval_steps: 100
 save_steps: 100
 output_dir: "../model"
+max_new_tokens: 2
 
 lora_r: 16
 lora_alpha: 32

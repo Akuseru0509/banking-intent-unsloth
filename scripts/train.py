@@ -129,6 +129,8 @@ class IntentTrainer():
             save_strategy = "steps",
             save_steps = self.configurations["save_steps"],
             load_best_model_at_end = True,
+            metric_for_best_model="eval_loss",
+            greater_is_better=False,
 
             optim = self.configurations["optimizer"],
             weight_decay = self.configurations["decay"],
@@ -146,6 +148,70 @@ class IntentTrainer():
             eval_dataset=validation_set,
             args=training_args
         )
+
+    def _evaluate(self, model, tokenizer, test_set):
+        from tqdm.notebook import trange
+
+        y_true = []
+        y_pred = []
+
+        total_samples = len(test_set)
+
+        for i in trange(total=total_samples, desc="Evaluating"):
+            example = test_set[i]
+            text = example["text"]
+            label = int(example["label"])
+
+            prompt = """### Instruction:
+            Classify the intent of the following banking request.
+            
+            ### Input:
+            {}
+            
+            ### Response:
+            Answer: <|label|>"""
+
+            promtp = prompt.format(
+                text
+            )
+
+            inputs = tokenizer(prompt, return_tensors="pt").to('cuda')
+
+            input_length = inputs.input_ids.shape[1]
+
+            output = model.generate(
+                **inputs,
+                max_new_tokens=self.configurations["max_new_tokens"],
+                use_cache=True,
+                pad_token_id=tokenizer.eos_token_id
+            )
+
+            predicted_text = tokenizer.decode(
+                output[0][input_length:],
+                skip_special_tokens=True
+            ).strip()
+
+            numeric_id = ''.join(filter(str.isdigit, predicted_text))
+
+            if numeric_id == "":
+                pred_label = -1
+            else:
+                pred_label = int(numeric_id)
+
+            y_true.append(label)
+            y_pred.append(pred_label)
+        
+        from sklearn.metrics import accuracy_score, f1_score, classification_report
+
+        accuracy = accuracy_score(y_true, y_pred)
+        macro_f1 = f1_score(y_true, y_pred, average="macro", zero_division=0)
+        
+        print(f"\nFinal Test Set Results ({total_samples} samples):")
+        print(f"Accuracy:  {accuracy * 100:.2f}%")
+        print(f"Macro F1:  {macro_f1 * 100:.2f}%")
+
+        print("\nDetailed Classification Report:")
+        print(classification_report(y_true, y_pred, zero_division=0))
     
     def _pipeline(self):
         try:
@@ -189,6 +255,8 @@ class IntentTrainer():
             )
             
             trainer.train()
+
+            self._evaluate(model, tokenizer, test_set)
 
         except Exception as e:
             raise ValueError(f"Error: {e}")
