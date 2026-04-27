@@ -218,6 +218,7 @@ class IntentTrainer():
             BASE_DIR = Path(__file__).parents[0].parents[0]
             DATA_DIR = BASE_DIR / "sample_data"
             CONFIG_DIR = BASE_DIR / "configs"
+            MODEL_PATH = BASE_DIR / "model"
 
             label_converter = LabelConverter(DATA_DIR / "categories.json", DATA_DIR / "map.json")
             category_map = label_converter._get_map()
@@ -257,6 +258,9 @@ class IntentTrainer():
             trainer.train()
 
             self._evaluate(model, tokenizer, test_set)
+
+            model.save_pretrained(MODEL_PATH)
+            tokenizer.save_pretrained(MODEL_PATH)
 
         except Exception as e:
             raise ValueError(f"Error: {e}")
