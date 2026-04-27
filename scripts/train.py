@@ -129,6 +129,8 @@ class IntentTrainer():
             save_strategy = "steps",
             save_steps = self.configurations["save_steps"],
             load_best_model_at_end = True,
+            metric_for_best_model="eval_loss",
+            greater_is_better=False,
 
             optim = self.configurations["optimizer"],
             weight_decay = self.configurations["decay"],
@@ -155,22 +157,21 @@ class IntentTrainer():
 
         total_samples = len(test_set)
 
-        for example in trange(test_set, total=total_samples, desc="Evaluating"):
+        for i in trange(total=total_samples, desc="Evaluating"):
+            example = test_set[i]
             text = example["text"]
             label = int(example["label"])
 
-            prompt = """
-                ### Instruction:
-                Classify the intent of the following banking request.
+            prompt = """### Instruction:
+            Classify the intent of the following banking request.
+            
+            ### Input:
+            {}
+            
+            ### Response:
+            Answer: <|label|>"""
 
-                ### Input:
-                {}
-
-                ### Response:
-                Answer:
-            """
-
-            prompt.format(
+            promtp = prompt.format(
                 text
             )
 

@@ -36,15 +36,14 @@ class IntentClassification:
         if self.tokenizer.pad_token is None:
             self.tokenizer.pad_token = self.tokenizer.eos_token
 
-        self.prompt = """
-        ### Instruction:
-        Classify the intent of the following banking request.
-
-        ### Input:
-        {}
-
-        ### Response:
-        Answer:"""
+        self.prompt = """### Instruction:
+            Classify the intent of the following banking request.
+            
+            ### Input:
+            {}
+            
+            ### Response:
+            Answer: <|label|>"""
 
     def __call__(self, message):
         prompt = self.prompt.format(message)
